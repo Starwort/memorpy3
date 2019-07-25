@@ -17,7 +17,7 @@ with open(os.path.join(_here, "memorpy", "version.py")) as file:
     exec(file.read(), version)
 
 setup(
-    name="memorpy3",
+    name="mempy3",
     version=version["__version__"],
     description=("A python 3 port of memorpy, a library by n1nj4sec"),
     long_description=long_description,

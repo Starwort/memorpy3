@@ -1,4 +1,4 @@
-# memorpy3
+# mempy3
 
 Python 3 library using ctypes to search/edit windows/linux/OSX/SunOS programs' memory.
 Port of [memorpy](https://github.com/n1nj4sec/memorpy)
@@ -10,7 +10,7 @@ See what this means [here](https://semver.org/)
 ## Install
 
 ```bash
-pip install memorpy
+pip install mempy3
 ```
 
 (ensure that pip uses python3 - on some systems `pip3` or `python3 -m pip` is required)
