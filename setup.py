@@ -13,7 +13,7 @@ else:
         long_description = file.read()
 
 version = {}
-with open(os.path.join(_here, "wanakana", "version.py")) as file:
+with open(os.path.join(_here, "memorpy", "version.py")) as file:
     exec(file.read(), version)
 
 setup(
