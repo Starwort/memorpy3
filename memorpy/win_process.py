@@ -287,14 +287,14 @@ class WinProcess(BaseProcess):
         address = int(address)
         buffer = create_string_buffer(_bytes)
         bytesread = c_size_t(0)
-        data = ""
+        data = b""
         length = _bytes
         while length:
             if RpM(self.h_process, address, buffer, _bytes, byref(bytesread)) or (
                 use_NtWow64ReadVirtualMemory64 and GetLastError() == 0
             ):
                 if bytesread.value:
-                    data += "".join(chr(i) for i in buffer.raw[: bytesread.value])
+                    data += buffer.raw[: bytesread.value]
                     length -= bytesread.value
                     address += bytesread.value
                 if not len(data):
@@ -307,7 +307,7 @@ class WinProcess(BaseProcess):
                 if (
                     GetLastError() == 299
                 ):  # only part of ReadProcessMemory has been done, let's return it
-                    data += "".join(chr(i) for i in buffer.raw[: bytesread.value])
+                    data += buffer.raw[: bytesread.value]
                     return data
                 raise WinError()
             # data += buffer.raw[:bytesread.value]

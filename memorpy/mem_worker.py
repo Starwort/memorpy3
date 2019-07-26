@@ -175,7 +175,7 @@ class MemWorker(object):
 
         elif ftype == "float":
             func = self.parse_float_function
-        elif ftype == "lambda":  # use a custm function
+        elif ftype == "lambda":  # use a custom function
             func = value
         else:
             func = self.parse_any_function
@@ -191,7 +191,7 @@ class MemWorker(object):
             protec=protec,
             optimizations=optimizations,
         ):
-            b = ""
+            b = b""
             current_offset = offset
             chunk_read = 0
             chunk_exc = False
@@ -222,5 +222,5 @@ class MemWorker(object):
                     for res in func(b, offset):
                         yield res
                 else:
-                    for res in func(b, "".join(chr(i) for i in value), offset):
+                    for res in func(b, value, offset):
                         yield res
