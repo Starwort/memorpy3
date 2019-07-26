@@ -9,7 +9,7 @@ from ctypes import (
     c_bool,
     WinError,
 )
-from .structures import *
+from .structures import *  # pylint: disable=unused-wildcard-import
 import copy
 import struct
 from . import utils
@@ -24,7 +24,7 @@ IsWow64Process = None
 if hasattr(kernel32, "IsWow64Process"):
     IsWow64Process = kernel32.IsWow64Process
     IsWow64Process.restype = c_bool
-    IsWow64Process.argtypes = [c_void_p, POINTER(c_bool)]
+    IsWow64Process.argtypes = [c_void_p, POINTER(c_bool)]  # type: ignore
 
 
 class WinProcess(BaseProcess):
@@ -196,7 +196,9 @@ class WinProcess(BaseProcess):
 
     def VirtualQueryEx64(self, lpAddress):
         mbi = MEMORY_BASIC_INFORMATION64()
-        if not VirtualQueryEx64(self.h_process, lpAddress, byref(mbi), sizeof(mbi)):
+        if not VirtualQueryEx64(  # pylint: disable=undefined-variable
+            self.h_process, lpAddress, byref(mbi), sizeof(mbi)
+        ):
             raise ProcessException("Error VirtualQueryEx: 0x%08X" % lpAddress)
         return mbi
 
@@ -271,7 +273,7 @@ class WinProcess(BaseProcess):
 
         return res
 
-    def read_bytes(self, address, bytes=4, use_NtWow64ReadVirtualMemory64=False):
+    def read_bytes(self, address, _bytes=4, use_NtWow64ReadVirtualMemory64=False):
         # print "reading %s bytes from addr %s"%(bytes, address)
         if use_NtWow64ReadVirtualMemory64:
             if NtWow64ReadVirtualMemory64 is None:
@@ -283,16 +285,16 @@ class WinProcess(BaseProcess):
             RpM = ReadProcessMemory
 
         address = int(address)
-        buffer = create_string_buffer(bytes)
+        buffer = create_string_buffer(_bytes)
         bytesread = c_size_t(0)
         data = ""
-        length = bytes
+        length = _bytes
         while length:
-            if RpM(self.h_process, address, buffer, bytes, byref(bytesread)) or (
+            if RpM(self.h_process, address, buffer, _bytes, byref(bytesread)) or (
                 use_NtWow64ReadVirtualMemory64 and GetLastError() == 0
             ):
                 if bytesread.value:
-                    data += buffer.raw[: bytesread.value]
+                    data += "".join(chr(i) for i in buffer.raw[: bytesread.value])
                     length -= bytesread.value
                     address += bytesread.value
                 if not len(data):
@@ -305,7 +307,7 @@ class WinProcess(BaseProcess):
                 if (
                     GetLastError() == 299
                 ):  # only part of ReadProcessMemory has been done, let's return it
-                    data += buffer.raw[: bytesread.value]
+                    data += "".join(chr(i) for i in buffer.raw[: bytesread.value])
                     return data
                 raise WinError()
             # data += buffer.raw[:bytesread.value]

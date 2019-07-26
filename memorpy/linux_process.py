@@ -1,3 +1,4 @@
+# pylint: skip-file
 import copy
 import struct
 from . import utils
@@ -21,6 +22,7 @@ from .base_process import BaseProcess, ProcessException
 from .structures import *
 import logging
 import typing
+import traceback
 
 if typing.TYPE_CHECKING:
     os.getuid = lambda: 0
@@ -51,15 +53,15 @@ try:
     c_off64_t = ctypes.c_longlong
     lseek64 = libc.lseek64
     lseek64.argtypes = [c_int, c_off64_t, c_int]
-    lseek64.errcheck = errcheck
+    lseek64.errcheck = errcheck  # type: ignore
     open64 = libc.open64
     open64.restype = c_int
     open64.argtypes = [c_void_p, c_int]
-    open64.errcheck = errcheck
+    open64.errcheck = errcheck  # type: ignore
     pread64 = libc.pread64
     pread64.argtypes = [c_int, c_void_p, c_size_t, c_off64_t]
     pread64.restype = c_ssize_t
-    pread64.errcheck = errcheck
+    pread64.errcheck = errcheck  # type: ignore
     c_close = libc.close
     c_close.argtypes = [c_int]
     c_close.restype = c_int

@@ -8,13 +8,13 @@ import errno
 import os
 import signal
 from .base_process import BaseProcess, ProcessException
-from .structures import *
+from .structures import *  # pylint: disable=unused-wildcard-import
 import logging
 import subprocess
 
 logger = logging.getLogger("memorpy")
 
-libc = ctypes.CDLL(ctypes.util.find_library("c"))
+libc = ctypes.CDLL(ctypes.util.find_library("c"))  # type: ignore
 
 VM_REGION_BASIC_INFO_64 = 9
 

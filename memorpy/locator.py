@@ -37,28 +37,28 @@ class Locator(object):
             ]
         else:
             all_types = [self.type]
-        for type in all_types:
-            if type not in new_iter:
+        for _type in all_types:
+            if _type not in new_iter:
                 try:
-                    new_iter[type] = [
-                        Address(x, self.mw.process, type)
+                    new_iter[_type] = [
+                        Address(x, self.mw.process, _type)
                         for x in self.mw.mem_search(
-                            value, type, start_offset=self.start, end_offset=self.end
+                            value, _type, start_offset=self.start, end_offset=self.end
                         )
                     ]
                 except struct.error:
-                    new_iter[type] = []
+                    new_iter[_type] = []
             else:
                 l = []
-                for address in new_iter[type]:
+                for address in new_iter[_type]:
                     try:
-                        found = self.mw.process.read(address, type)
+                        found = self.mw.process.read(address, _type)
                         if int(found) == int(value):
-                            l.append(Address(address, self.mw.process, type))
+                            l.append(Address(address, self.mw.process, _type))
                     except Exception:
                         pass
 
-                new_iter[type] = l
+                new_iter[_type] = l
 
         if erase_last:
             del self.last_iteration

@@ -9,7 +9,7 @@ from .address import Address
 from .base_process import ProcessException
 import traceback
 import binascii
-from .structures import *
+from .structures import *  # pylint: disable=unused-wildcard-import
 
 logger = logging.getLogger("memorpy")
 
@@ -138,18 +138,18 @@ class MemWorker(object):
         if ftype == "re" or ftype == "groups" or ftype == "ngroups":
 
             # value should be an array of regex
-            if type(value) is not list:
+            if not isinstance(value, list):
                 value = [value]
 
             tmp = []
             for reg in value:
-                if type(reg) is tuple:
+                if isinstance(reg, tuple):
                     name = reg[0]
-                    if type(reg[1]) != REGEX_TYPE:
+                    if not isinstance(reg[1], REGEX_TYPE):
                         regex = re.compile(reg[1], re.IGNORECASE)
                     else:
                         regex = reg[1]
-                elif type(reg) == REGEX_TYPE:
+                elif isinstance(reg, REGEX_TYPE):
                     name = ""
                     regex = reg
                 else:
@@ -159,14 +159,7 @@ class MemWorker(object):
                 tmp.append((name, regex))
             value = tmp
 
-        elif (
-            ftype != "match"
-            and ftype != "group"
-            and ftype != "re"
-            and ftype != "groups"
-            and ftype != "ngroups"
-            and ftype != "lambda"
-        ):
+        elif ftype not in ["match", "group", "re", "groups", "ngroups", "lambda"]:
             structtype, _ = utils.type_unpack(ftype)
             value = struct.pack(structtype, value)
 
@@ -229,5 +222,5 @@ class MemWorker(object):
                     for res in func(b, offset):
                         yield res
                 else:
-                    for res in func(b, value, offset):
+                    for res in func(b, "".join(chr(i) for i in value), offset):
                         yield res
